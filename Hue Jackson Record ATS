@@ -1,13 +1,12 @@
--- SOME VALUES NEED TO BE FORMATTED AS INTEGERS STILL
 -- 2016, 2017, 2018 (through week 8)
 
-select *, (case when cle_against_spread > 0 then "covered" else "did not cover" end) as "did they cover?"
+select *, (case when cle_against_spread > 0 then "covered" else "did not cover" end) as did_they_cover
 from (
 
-select *, (case when team_favorite_id = 'CLE' then (cle_score_margin + spread_favorite) else (cle_score_margin - spread_favorite) end) as "cle_against_spread"
+select *, (case when team_favorite_id = 'CLE' then (cle_score_margin + spread_favorite_num) else (cle_score_margin - spread_favorite_num) end) as cle_against_spread
 from (
 
-select *, (case when home_or_away = 'home' then (score_home - score_away) else (score_away - score_home) end) as "cle_score_margin"
+select *, (case when home_or_away = 'home' then (score_home - score_away) else (score_away - score_home) end) as cle_score_margin
 from (
 
 select
@@ -18,14 +17,14 @@ score_home,
 score_away,
 team_away,
 team_favorite_id,
-spread_favorite,
+-1 * safe_cast(regexp_replace(spread_favorite, r'[()]', '') as float64) as spread_favorite_num,
 team_id,
-n.team_name,
-(case when team_home like '%Cleveland%' then "home" else "away" end) as "home_or_away"
-from spreadspoke_scores_FIXED_1
-join nfl_teams as n
-on n.team_name like '%Cleveland%'
-where schedule_season in ('2016', '2017', '2018')
+nt.team_name,
+(case when team_home like '%Cleveland%' then "home" else "away" end) as home_or_away
+from pd_sandbox.spreadspoke_scores
+join pd_sandbox.nfl_teams as nt
+on nt.team_name like '%Cleveland%'
+where schedule_season in (2016, 2017, 2018)
 and CONCAT(team_home,team_away) like '%Cleveland%'
 order by 1,2 asc
 )
