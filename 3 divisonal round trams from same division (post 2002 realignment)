@@ -1,0 +1,23 @@
+SELECT
+  schedule_season,
+  division,
+  COUNT(*) AS division_count
+FROM (
+  SELECT schedule_season,nt_home.team_division AS division
+  FROM `nfl-practice-483719.NFL_practice.spreadspoke_scores`
+  LEFT JOIN `nfl-practice-483719.NFL_practice.nfl_teams` AS nt_home
+    ON nt_home.team_name = team_home
+  WHERE schedule_season >= 2002
+    AND schedule_week = 'Division'
+
+  UNION ALL
+
+  SELECT schedule_season,nt_away.team_division AS division,
+  FROM `nfl-practice-483719.NFL_practice.spreadspoke_scores`
+  LEFT JOIN `nfl-practice-483719.NFL_practice.nfl_teams` AS nt_away
+    ON nt_away.team_name = team_away
+  WHERE schedule_season >= 2002
+    AND schedule_week = 'Division'
+) AS combined_divisions
+GROUP BY schedule_season, division
+ORDER BY division_count DESC;
