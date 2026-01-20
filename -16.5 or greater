@@ -16,13 +16,13 @@ team_away,
 team_favorite_id,
 (case when team_home = nt_home.team_name then nt_home.team_id else "null" end) as home_team_id,
 (case when team_away = nt_away.team_name then nt_away.team_id else "null" end) as away_team_id,
--1 * safe_cast(regexp_replace(spread_favorite, r'[()]', '') as float64) as spread_favorite_num,
-from pd_sandbox.spreadspoke_scores
-left join pd_sandbox.nfl_teams as nt_home
+-1 * safe_cast(regexp_replace(`  spread_favorite  `, r'[()]', '') as float64) as spread_favorite_num,
+from `nfl-practice-483719.NFL_practice.spreadspoke_scores`
+left join `nfl-practice-483719.NFL_practice.nfl_teams` as nt_home
 on nt_home.team_name = team_home
-left join pd_sandbox.nfl_teams as nt_away
+left join nfl-practice-483719.NFL_practice.nfl_teams as nt_away
 on nt_away.team_name = team_away
-where -1 * safe_cast(regexp_replace(spread_favorite, r'[()]', '') as float64) < -16.5
+where -1 * safe_cast(regexp_replace(`  spread_favorite  `, r'[()]', '') as float64) <= -16.5
 and schedule_season > 1999
 order by 1,2 asc
 )
