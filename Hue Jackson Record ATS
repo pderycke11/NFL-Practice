@@ -17,12 +17,12 @@ score_home,
 score_away,
 team_away,
 team_favorite_id,
--1 * safe_cast(regexp_replace(spread_favorite, r'[()]', '') as float64) as spread_favorite_num,
+-1 * safe_cast(regexp_replace('spread_favorite', 'r[()]', '') as float64) as spread_favorite_num,
 team_id,
 nt.team_name,
 (case when team_home like '%Cleveland%' then "home" else "away" end) as home_or_away
-from pd_sandbox.spreadspoke_scores
-join pd_sandbox.nfl_teams as nt
+from `nfl-practice-483719.NFL_practice.spreadspoke_scores`
+join `nfl-practice-483719.NFL_practice.nfl_teams` as nt
 on nt.team_name like '%Cleveland%'
 where schedule_season in (2016, 2017, 2018)
 and CONCAT(team_home,team_away) like '%Cleveland%'
