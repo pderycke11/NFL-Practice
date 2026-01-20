@@ -17,7 +17,7 @@ score_home,
 score_away,
 team_away,
 team_favorite_id,
--1 * safe_cast(regexp_replace('spread_favorite', 'r[()]', '') as float64) as spread_favorite_num,
+-1 * safe_cast(regexp_replace(`  spread_favorite  `, r'[()]', '') as float64) as spread_favorite_num,
 team_id,
 nt.team_name,
 (case when team_home like '%Cleveland%' then "home" else "away" end) as home_or_away
